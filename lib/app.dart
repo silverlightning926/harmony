@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:harmony/screens/home_screen.dart';
+import 'package:harmony/screens/onboarding_screen.dart';
 
 class Harmony extends StatelessWidget {
   const Harmony({super.key});
@@ -11,8 +12,12 @@ class Harmony extends StatelessWidget {
       title: 'Harmony',
       debugShowCheckedModeBanner: false,
       routerConfig: GoRouter(
-        initialLocation: "/home",
+        initialLocation: "/intro",
         routes: [
+          GoRoute(
+            path: "/intro",
+            builder: (context, state) => const OnboardingScreen(),
+          ),
           GoRoute(
             path: "/home",
             builder: (context, state) => const HomeScreen(),
