@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.4.3 <4.0.0'
 
 dependencies:
+  audio_video_progress_bar: ^2.0.3
   flutter:
     sdk: flutter
   flutter_gradient_animation_text: ^1.0.2

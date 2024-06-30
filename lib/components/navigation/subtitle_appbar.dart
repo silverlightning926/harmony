@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SubtitleAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SubtitleAppBar({
@@ -11,24 +12,32 @@ class SubtitleAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 0,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 45),
-          const GradientAnimationText(
-            text: Text('Harmony'),
-            colors: [
+          GradientAnimationText(
+            text: Text(
+              'Harmony',
+              style: GoogleFonts.poppins(
+                fontSize: 45,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            colors: const [
               Color(0xFF9C4DCC),
               Color(0xFFEA76CB),
             ],
-            duration: Duration(seconds: 30),
-            transform: GradientRotation(1.5 * pi),
+            duration: const Duration(seconds: 30),
+            transform: const GradientRotation(1.5 * pi),
           ),
           const SizedBox(height: 7),
           Text(
             'Dive Deeper Into Your Music',
-            style: Theme.of(context).textTheme.titleSmall,
+            style: GoogleFonts.poppins(
+              fontSize: 15,
+              fontWeight: FontWeight.w300,
+            ),
           ),
         ],
       ),
