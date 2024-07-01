@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:harmony/providers/auth_providers.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -88,7 +90,11 @@ class OnboardingScreen extends StatelessWidget {
             useScrollView: false,
             title: "Connect To Spotify",
             bodyWidget: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                await AuthService().login().then(
+                      (_) => context.go('/home'),
+                    );
+              },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: const Color(0xFF1DB954),

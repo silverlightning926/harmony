@@ -11,10 +11,10 @@ dependencies:
   envied: ^0.5.4+1
   flutter:
     sdk: flutter
+  flutter_appauth: ^6.0.6
   flutter_gradient_animation_text: ^1.0.2
-  flutter_riverpod: ^2.5.1
+  flutter_secure_storage: ^4.2.1
   flutter_svg: ^2.0.10+1
-  flutter_web_auth_2: ^3.1.2
   go_router: ^14.2.0
   google_fonts: ^6.2.1
   introduction_screen: ^3.1.14
@@ -25,7 +25,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  riverpod_generator: ^2.4.0
   build_runner: ^2.4.11
   custom_lint: ^0.6.4
   envied_generator: ^0.5.4+1

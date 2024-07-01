@@ -9,18 +9,20 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const SubtitleAppBar(),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: const [
-          NowPlayingCard(),
-          SizedBox(height: 20),
-          RecentSongsSection(),
-          SizedBox(height: 20),
-          RecentArtistsSection(),
-          SizedBox(height: 20),
-        ],
+    return PopScope(
+      child: Scaffold(
+        appBar: const SubtitleAppBar(),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: const [
+            NowPlayingCard(),
+            SizedBox(height: 20),
+            RecentSongsSection(),
+            SizedBox(height: 20),
+            RecentArtistsSection(),
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
