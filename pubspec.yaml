@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   audio_video_progress_bar: ^2.0.3
+  envied: ^0.5.4+1
   flutter:
     sdk: flutter
   flutter_gradient_animation_text: ^1.0.2
@@ -27,7 +28,7 @@ dev_dependencies:
   riverpod_generator: ^2.4.0
   build_runner: ^2.4.11
   custom_lint: ^0.6.4
-  riverpod_lint: ^2.3.10
+  envied_generator: ^0.5.4+1
 
 flutter:
   uses-material-design: true
@@ -35,3 +36,4 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - .env
