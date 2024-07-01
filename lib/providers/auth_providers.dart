@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:harmony/env/env.dart';
@@ -25,16 +27,50 @@ class AuthService {
   final _appAuth = const FlutterAppAuth();
 
   Future<void> _saveTokens(AuthorizationTokenResponse result) async {
-    await _secureStorage.write(key: 'access_token', value: result.accessToken!);
-    await _secureStorage.write(
-        key: 'refresh_token', value: result.refreshToken!);
-    await _secureStorage.write(
+    if (result.accessToken != null) {
+      await _secureStorage.write(
+          key: 'access_token', value: result.accessToken!);
+    }
+
+    if (result.refreshToken != null) {
+      await _secureStorage.write(
+          key: 'refresh_token', value: result.refreshToken!);
+    }
+
+    if (result.accessTokenExpirationDateTime != null) {
+      await _secureStorage.write(
         key: 'expires_at',
-        value: result.accessTokenExpirationDateTime!.toIso8601String());
+        value: result.accessTokenExpirationDateTime!.toIso8601String(),
+      );
+    }
+
+    if (result.tokenType != null) {
+      await _secureStorage.write(key: 'token_type', value: result.tokenType!);
+    }
+
+    if (result.authorizationAdditionalParameters != null) {
+      await _secureStorage.write(
+        key: 'authorization_additional_parameters',
+        value: encodeMap(result.authorizationAdditionalParameters!),
+      );
+    }
+
+    if (result.tokenAdditionalParameters != null) {
+      await _secureStorage.write(
+        key: 'token_additional_parameters',
+        value: encodeMap(result.tokenAdditionalParameters!),
+      );
+    }
   }
 
+  // TODO: Implement refresh token logic
   Future<AuthorizationTokenResponse?> login() async {
     try {
+      if (await isLoggedIn()) {
+        // TODO Use current token
+        return null;
+      }
+
       final result = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
           _clientId,
@@ -56,5 +92,32 @@ class AuthService {
     } on Exception catch (e) {
       throw Exception('Failed to login: $e');
     }
+  }
+
+  Future<bool> isLoggedIn() async {
+    var accessToken = await _secureStorage.read(key: 'access_token');
+    var refreshToken = await _secureStorage.read(key: 'refresh_token');
+    var expiresAt = await _secureStorage.read(key: 'expires_at');
+    var tokenType = await _secureStorage.read(key: 'token_type');
+    var authorizationAdditionalParameters =
+        await _secureStorage.read(key: 'authorization_additional_parameters');
+    var tokenAdditionalParameters =
+        await _secureStorage.read(key: 'token_additional_parameters');
+
+    return accessToken != null &&
+        refreshToken != null &&
+        expiresAt != null &&
+        DateTime.parse(expiresAt).isAfter(DateTime.now()) &&
+        tokenType != null &&
+        authorizationAdditionalParameters != null &&
+        tokenAdditionalParameters != null;
+  }
+
+  String encodeMap(Map<String, dynamic> data) {
+    return jsonEncode(data);
+  }
+
+  Future<Map<String, dynamic>> decodeMap(String data) async {
+    return jsonDecode(data);
   }
 }

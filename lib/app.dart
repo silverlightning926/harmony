@@ -12,6 +12,7 @@ class Harmony extends StatelessWidget {
       title: 'Harmony',
       debugShowCheckedModeBanner: false,
       routerConfig: GoRouter(
+        // TODO: Check if the user is already authenticated
         initialLocation: "/intro",
         routes: [
           GoRoute(
