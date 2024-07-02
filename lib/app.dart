@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:harmony/screens/connect_screen.dart';
 import 'package:harmony/screens/home_screen.dart';
-import 'package:harmony/screens/onboarding_screen.dart';
+import 'package:harmony/screens/loading_screen.dart';
 
 class Harmony extends StatelessWidget {
   const Harmony({super.key});
@@ -12,16 +13,19 @@ class Harmony extends StatelessWidget {
       title: 'Harmony',
       debugShowCheckedModeBanner: false,
       routerConfig: GoRouter(
-        // TODO: Check if the user is already authenticated
-        initialLocation: "/intro",
+        initialLocation: '/loading',
         routes: [
           GoRoute(
-            path: "/intro",
-            builder: (context, state) => const OnboardingScreen(),
+            path: '/loading',
+            builder: (context, state) => const LoadingScreen(),
           ),
           GoRoute(
             path: "/home",
             builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: '/connect',
+            builder: (context, state) => const ConnectScreen(),
           ),
         ],
       ),

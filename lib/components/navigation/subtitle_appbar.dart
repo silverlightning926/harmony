@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:harmony/providers/auth_providers.dart';
 
 class SubtitleAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SubtitleAppBar({
@@ -41,6 +43,17 @@ class SubtitleAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () async {
+            await AuthService.logout();
+            if (context.mounted) {
+              context.go('/connect');
+            }
+          },
+        ),
+      ],
       clipBehavior: Clip.none,
     );
   }

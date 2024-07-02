@@ -20,13 +20,11 @@ const _scopes = [
   'user-read-private',
 ];
 
-// TODO: Refactor this class to use Riverpod
 class AuthService {
-  final _secureStorage = const FlutterSecureStorage();
+  static const _secureStorage = FlutterSecureStorage();
+  static const _appAuth = FlutterAppAuth();
 
-  final _appAuth = const FlutterAppAuth();
-
-  Future<void> _saveTokens(AuthorizationTokenResponse result) async {
+  static Future<void> _saveTokens(AuthorizationTokenResponse result) async {
     await _secureStorage.write(key: 'access_token', value: result.accessToken);
     await _secureStorage.write(
         key: 'refresh_token', value: result.refreshToken);
@@ -46,37 +44,46 @@ class AuthService {
             : null);
   }
 
-  Future<bool> isAuthenticated() async {
+  static Future<bool> isAuthenticated() async {
     final token = await fetchExistingToken();
     return token != null;
   }
 
-  Future<AuthorizationTokenResponse?> fetchExistingToken() async {
-    final String? accessToken = await _secureStorage
+  static Future<void> logout() async {
+    await _secureStorage.delete(key: 'access_token');
+    await _secureStorage.delete(key: 'refresh_token');
+    await _secureStorage.delete(key: 'expires_at');
+    await _secureStorage.delete(key: 'token_type');
+    await _secureStorage.delete(key: 'authorization_additional_parameters');
+    await _secureStorage.delete(key: 'token_additional_parameters');
+  }
+
+  static Future<AuthorizationTokenResponse?> fetchExistingToken() async {
+    final accessToken = await _secureStorage
         .read(key: 'access_token')
         .then((value) => value ?? '');
 
-    final String? refreshToken = await _secureStorage
+    final refreshToken = await _secureStorage
         .read(key: 'refresh_token')
         .then((value) => value ?? '');
 
-    final String? expiresAt = await _secureStorage
+    final expiresAt = await _secureStorage
         .read(key: 'expires_at')
         .then((value) => value ?? '');
 
-    final String? tokenType = await _secureStorage
+    final tokenType = await _secureStorage
         .read(key: 'token_type')
         .then((value) => value ?? '');
 
-    final String? authorizationAdditionalParameters = await _secureStorage
+    final authorizationAdditionalParameters = await _secureStorage
         .read(key: 'authorization_additional_parameters')
         .then((value) => value ?? '');
 
-    final String? tokenAdditionalParameters = await _secureStorage
+    final tokenAdditionalParameters = await _secureStorage
         .read(key: 'token_additional_parameters')
         .then((value) => value ?? '');
 
-    if (accessToken == null || refreshToken == null || expiresAt == null) {
+    if (accessToken == '' || refreshToken == '' || expiresAt == '') {
       return null;
     }
 
@@ -85,23 +92,18 @@ class AuthService {
     }
 
     return AuthorizationTokenResponse(
-      accessToken,
-      refreshToken,
-      DateTime.parse(expiresAt),
-      null,
-      tokenType,
-      _scopes,
-      authorizationAdditionalParameters != null
-          ? await decodeMap(authorizationAdditionalParameters)
-          : null,
-      tokenAdditionalParameters != null
-          ? await decodeMap(tokenAdditionalParameters)
-          : null,
-    );
+        accessToken,
+        refreshToken,
+        DateTime.parse(expiresAt),
+        null,
+        tokenType,
+        _scopes,
+        decodeMap(authorizationAdditionalParameters),
+        decodeMap(tokenAdditionalParameters));
   }
 
   // TODO: Implement refresh token logic
-  Future<AuthorizationTokenResponse?> login() async {
+  static Future<AuthorizationTokenResponse?> login() async {
     try {
       final existingToken = await fetchExistingToken();
       if (existingToken != null) {
@@ -131,11 +133,11 @@ class AuthService {
     }
   }
 
-  String encodeMap(Map<String, dynamic> data) {
+  static String encodeMap(Map<String, dynamic> data) {
     return jsonEncode(data);
   }
 
-  Future<Map<String, dynamic>> decodeMap(String data) async {
+  static Map<String, dynamic> decodeMap(String data) {
     return jsonDecode(data);
   }
 }
