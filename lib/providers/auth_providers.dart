@@ -46,6 +46,11 @@ class AuthService {
             : null);
   }
 
+  Future<bool> isAuthenticated() async {
+    final token = await fetchExistingToken();
+    return token != null;
+  }
+
   Future<AuthorizationTokenResponse?> fetchExistingToken() async {
     final String? accessToken = await _secureStorage
         .read(key: 'access_token')
