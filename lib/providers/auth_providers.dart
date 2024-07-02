@@ -1,6 +1,6 @@
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:harmony/env/env.dart';
+import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_providers.g.dart';
@@ -23,59 +23,6 @@ const _scopes = [
 ];
 
 const _appAuth = FlutterAppAuth();
-const _secureStorage = FlutterSecureStorage();
-
-@riverpod
-Future<void> _saveToken(
-    _SaveTokenRef ref, AuthorizationTokenResponse response) async {
-  await _secureStorage.write(
-    key: 'access_token',
-    value: response.accessToken,
-  );
-  await _secureStorage.write(
-    key: 'refresh_token',
-    value: response.refreshToken,
-  );
-  await _secureStorage.write(
-    key: 'expires_in',
-    value: response.accessTokenExpirationDateTime?.toIso8601String(),
-  );
-  await _secureStorage.write(
-    key: 'id_token',
-    value: response.idToken,
-  );
-  await _secureStorage.write(
-    key: 'token_type',
-    value: response.tokenType,
-  );
-
-  return;
-}
-
-@riverpod
-Future<AuthorizationTokenResponse?> fetchSavedToken(
-    FetchSavedTokenRef ref) async {
-  final accessToken = await _secureStorage.read(key: 'access_token') ?? '';
-  final refreshToken = await _secureStorage.read(key: 'refresh_token') ?? '';
-  final expiresIn = await _secureStorage.read(key: 'expires_in') ?? '';
-  final idToken = await _secureStorage.read(key: 'id_token') ?? '';
-  final tokenType = await _secureStorage.read(key: 'token_type') ?? '';
-
-  if (accessToken.isEmpty || refreshToken.isEmpty || expiresIn.isEmpty) {
-    return null;
-  }
-
-  return AuthorizationTokenResponse(
-    accessToken,
-    refreshToken,
-    DateTime.parse(expiresIn),
-    idToken,
-    tokenType,
-    _scopes,
-    null,
-    null,
-  );
-}
 
 @riverpod
 Future<AuthorizationTokenResponse?> login(LoginRef ref) async {
@@ -99,7 +46,7 @@ Future<AuthorizationTokenResponse?> login(LoginRef ref) async {
       await _appAuth.authorizeAndExchangeCode(request);
 
   if (response != null) {
-    await ref.read(_saveTokenProvider(response).future);
+    await ref.read(saveTokenProvider(response).future);
   }
 
   return response;
@@ -107,12 +54,7 @@ Future<AuthorizationTokenResponse?> login(LoginRef ref) async {
 
 @riverpod
 Future<void> logout(LogoutRef ref) async {
-  await _secureStorage.delete(key: 'access_token');
-  await _secureStorage.delete(key: 'refresh_token');
-  await _secureStorage.delete(key: 'expires_in');
-  await _secureStorage.delete(key: 'id_token');
-  await _secureStorage.delete(key: 'token_type');
-
+  await ref.read(deleteTokenProvider.future);
   return;
 }
 
