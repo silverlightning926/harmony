@@ -27,40 +27,23 @@ class AuthService {
   final _appAuth = const FlutterAppAuth();
 
   Future<void> _saveTokens(AuthorizationTokenResponse result) async {
-    if (result.accessToken != null) {
-      await _secureStorage.write(
-          key: 'access_token', value: result.accessToken!);
-    }
-
-    if (result.refreshToken != null) {
-      await _secureStorage.write(
-          key: 'refresh_token', value: result.refreshToken!);
-    }
-
-    if (result.accessTokenExpirationDateTime != null) {
-      await _secureStorage.write(
+    await _secureStorage.write(key: 'access_token', value: result.accessToken);
+    await _secureStorage.write(
+        key: 'refresh_token', value: result.refreshToken);
+    await _secureStorage.write(
         key: 'expires_at',
-        value: result.accessTokenExpirationDateTime!.toIso8601String(),
-      );
-    }
-
-    if (result.tokenType != null) {
-      await _secureStorage.write(key: 'token_type', value: result.tokenType!);
-    }
-
-    if (result.authorizationAdditionalParameters != null) {
-      await _secureStorage.write(
+        value: result.accessTokenExpirationDateTime?.toIso8601String());
+    await _secureStorage.write(key: 'token_type', value: result.tokenType);
+    await _secureStorage.write(
         key: 'authorization_additional_parameters',
-        value: encodeMap(result.authorizationAdditionalParameters!),
-      );
-    }
-
-    if (result.tokenAdditionalParameters != null) {
-      await _secureStorage.write(
+        value: result.authorizationAdditionalParameters != null
+            ? encodeMap(result.authorizationAdditionalParameters!)
+            : null);
+    await _secureStorage.write(
         key: 'token_additional_parameters',
-        value: encodeMap(result.tokenAdditionalParameters!),
-      );
-    }
+        value: result.tokenAdditionalParameters != null
+            ? encodeMap(result.tokenAdditionalParameters!)
+            : null);
   }
 
   Future<AuthorizationTokenResponse?> fetchExistingToken() async {
