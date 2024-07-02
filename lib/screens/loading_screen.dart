@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:harmony/providers/auth_providers.dart';
 
-class LoadingScreen extends StatefulWidget {
+class LoadingScreen extends ConsumerStatefulWidget {
   const LoadingScreen({super.key});
-
   @override
-  State<LoadingScreen> createState() => _LoadingScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen> {
+class _LoadingScreenState extends ConsumerState<LoadingScreen> {
+  Future<bool> _checkIfAuthenticated() async {
+    final isAuthenticated = await ref.read(isAuthenticatedProvider.future);
+    return isAuthenticated;
+  }
+
   @override
   void initState() {
-    AuthService.isAuthenticated().then((isAuthenticated) {
+    _checkIfAuthenticated().then((isAuthenticated) {
       if (isAuthenticated) {
-        (context).go('/home');
+        context.go('/home');
       } else {
-        (context).go('/connect');
+        context.go('/connect');
       }
     });
     super.initState();
@@ -27,9 +32,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: SpinKitCubeGrid(
+        child: SpinKitWave(
           color: Colors.white,
-          size: 100.0,
+          size: 50.0,
         ),
       ),
     );

@@ -2,17 +2,18 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:harmony/providers/auth_providers.dart';
 
-class SubtitleAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SubtitleAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const SubtitleAppBar({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +48,7 @@ class SubtitleAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.logout),
           onPressed: () async {
-            await AuthService.logout();
+            await ref.read(logoutProvider.future);
             if (context.mounted) {
               context.go('/connect');
             }
