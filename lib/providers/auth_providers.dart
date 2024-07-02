@@ -63,12 +63,61 @@ class AuthService {
     }
   }
 
+  Future<AuthorizationTokenResponse?> fetchExistingToken() async {
+    final String? accessToken = await _secureStorage
+        .read(key: 'access_token')
+        .then((value) => value ?? '');
+
+    final String? refreshToken = await _secureStorage
+        .read(key: 'refresh_token')
+        .then((value) => value ?? '');
+
+    final String? expiresAt = await _secureStorage
+        .read(key: 'expires_at')
+        .then((value) => value ?? '');
+
+    final String? tokenType = await _secureStorage
+        .read(key: 'token_type')
+        .then((value) => value ?? '');
+
+    final String? authorizationAdditionalParameters = await _secureStorage
+        .read(key: 'authorization_additional_parameters')
+        .then((value) => value ?? '');
+
+    final String? tokenAdditionalParameters = await _secureStorage
+        .read(key: 'token_additional_parameters')
+        .then((value) => value ?? '');
+
+    if (accessToken == null || refreshToken == null || expiresAt == null) {
+      return null;
+    }
+
+    if (DateTime.now().isAfter(DateTime.parse(expiresAt))) {
+      return null;
+    }
+
+    return AuthorizationTokenResponse(
+      accessToken,
+      refreshToken,
+      DateTime.parse(expiresAt),
+      null,
+      tokenType,
+      _scopes,
+      authorizationAdditionalParameters != null
+          ? await decodeMap(authorizationAdditionalParameters)
+          : null,
+      tokenAdditionalParameters != null
+          ? await decodeMap(tokenAdditionalParameters)
+          : null,
+    );
+  }
+
   // TODO: Implement refresh token logic
   Future<AuthorizationTokenResponse?> login() async {
     try {
-      if (await isLoggedIn()) {
-        // TODO Use current token
-        return null;
+      final existingToken = await fetchExistingToken();
+      if (existingToken != null) {
+        return existingToken;
       }
 
       final result = await _appAuth.authorizeAndExchangeCode(
@@ -92,25 +141,6 @@ class AuthService {
     } on Exception catch (e) {
       throw Exception('Failed to login: $e');
     }
-  }
-
-  Future<bool> isLoggedIn() async {
-    var accessToken = await _secureStorage.read(key: 'access_token');
-    var refreshToken = await _secureStorage.read(key: 'refresh_token');
-    var expiresAt = await _secureStorage.read(key: 'expires_at');
-    var tokenType = await _secureStorage.read(key: 'token_type');
-    var authorizationAdditionalParameters =
-        await _secureStorage.read(key: 'authorization_additional_parameters');
-    var tokenAdditionalParameters =
-        await _secureStorage.read(key: 'token_additional_parameters');
-
-    return accessToken != null &&
-        refreshToken != null &&
-        expiresAt != null &&
-        DateTime.parse(expiresAt).isAfter(DateTime.now()) &&
-        tokenType != null &&
-        authorizationAdditionalParameters != null &&
-        tokenAdditionalParameters != null;
   }
 
   String encodeMap(Map<String, dynamic> data) {
