@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:harmony/models/recently_played_state/item.dart';
 
 // TODO: Replace placeholder with actual song data
 
 class SongCard extends StatelessWidget {
+  final Item item;
+
   const SongCard({
     super.key,
+    required this.item,
   });
 
   @override
@@ -21,8 +25,8 @@ class SongCard extends StatelessWidget {
               width: 250,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: const NetworkImage(
-                    "https://upload.wikimedia.org/wikipedia/en/4/44/Kids_See_Ghosts_Cover.png",
+                  image: NetworkImage(
+                    item.track?.album?.images?.first.url ?? '',
                   ),
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.6),
@@ -31,7 +35,7 @@ class SongCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: const Stack(
+              child: Stack(
                 children: [
                   Align(
                     alignment: Alignment.bottomLeft,
@@ -40,15 +44,18 @@ class SongCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "4th Dimension",
-                            style: TextStyle(
+                            item.track?.name ?? '',
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            "Kids See Ghosts",
-                            style: TextStyle(
+                            item.track?.artists
+                                    ?.map((artist) => artist.name)
+                                    .join(', ') ??
+                                '',
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w300,
                             ),

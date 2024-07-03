@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
+import 'package:harmony/models/recently_played_state/recently_played_state.dart';
 import 'package:harmony/providers/exceptions/no_content_exception.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:http/http.dart' as http;
@@ -47,4 +48,36 @@ Future<CurrentlyPlayingState> _fetchPlaybackState(String accessToken) async {
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
   return CurrentlyPlayingState.fromJson(json);
+}
+
+Future<RecentlyPlayedState> _fetchRecentlyPlayed(String accessToken) async {
+  final response = await http.get(
+    Uri.parse(_recentlyPlayedEndpoint),
+    headers: {
+      'Authorization': 'Bearer $accessToken',
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load recently played');
+  }
+
+  final json = jsonDecode(response.body) as Map<String, dynamic>;
+  return RecentlyPlayedState.fromJson(json);
+}
+
+@riverpod
+Stream<RecentlyPlayedState> recentlyPlayedStateStream(
+    RecentlyPlayedStateStreamRef ref) async* {
+  final token = await ref.read(fetchSavedTokenProvider.future);
+
+  if (token == null) {
+    throw Exception('Token not found');
+  }
+
+  yield await _fetchRecentlyPlayed(token.accessToken!);
+
+  yield* Stream.periodic(const Duration(minutes: 1)).asyncMap(
+    (_) async => _fetchRecentlyPlayed(token.accessToken!),
+  );
 }

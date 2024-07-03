@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harmony/components/cards/song_card.dart';
+import 'package:harmony/providers/spotify_providers.dart';
 
-class RecentSongsSection extends StatelessWidget {
+class RecentSongsSection extends ConsumerWidget {
   const RecentSongsSection({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recentlyPlayedState = ref.watch(recentlyPlayedStateStreamProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -21,11 +24,21 @@ class RecentSongsSection extends StatelessWidget {
         const SizedBox(height: 10),
         SizedBox(
           height: 150,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: List.generate(
-              10,
-              (index) => const SongCard(),
+          child: recentlyPlayedState.when(
+            data: (data) {
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: data.items?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return SongCard(item: data.items![index]);
+                },
+              );
+            },
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            error: (error, stackTrace) => const Center(
+              child: Text('Failed to load recent songs'),
             ),
           ),
         ),
