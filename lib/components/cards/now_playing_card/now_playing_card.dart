@@ -13,7 +13,9 @@ class NowPlayingCard extends ConsumerWidget {
     return playbackState.when(
       data: (data) {
         return NowPlayingCardData(
-            playbackState: data, isPlaying: data.isPlaying ?? false);
+          playbackState: data,
+          isPlaying: data.isPlaying ?? false,
+        );
       },
       loading: () => const NowPlayingCardLoading(),
       error: (error, stackTrace) => const SizedBox.shrink(),

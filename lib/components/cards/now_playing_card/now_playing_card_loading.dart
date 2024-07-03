@@ -13,7 +13,7 @@ class NowPlayingCardLoading extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Shimmer(
-          child: Container(
+          child: const SizedBox(
             height: 200,
           ),
         ),
