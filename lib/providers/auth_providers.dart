@@ -7,8 +7,6 @@ part 'auth_providers.g.dart';
 
 const _clientId = Env.spotifyClientId;
 const _clientSecret = Env.spotifyClientSecret;
-const _authorizationEndpoint = 'https://accounts.spotify.com/authorize';
-const _tokenEndpoint = 'https://accounts.spotify.com/api/token';
 const _issuer = 'https://accounts.spotify.com';
 const _redirectUri = 'com.novalabs.harmony:/oauth2redirect';
 const _scopes = [
