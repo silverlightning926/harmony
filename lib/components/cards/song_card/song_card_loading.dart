@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class SongCardLoading extends StatelessWidget {
   const SongCardLoading({
@@ -7,8 +8,16 @@ class SongCardLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Shimmer(
+          child: const SizedBox(
+            width: 250,
+          ),
+        ),
+      ),
     );
   }
 }

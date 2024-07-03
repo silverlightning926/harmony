@@ -32,7 +32,7 @@ class NowPlayingCardData extends StatelessWidget {
               end: 1,
               curve: Curves.easeInOut,
               duration: Duration(milliseconds: 300),
-            )
+            ),
           ],
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),

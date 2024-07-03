@@ -20,7 +20,13 @@ class ArtistCard extends ConsumerWidget {
           },
         );
       },
-      loading: () => const ArtistCardLoading(),
+      loading: () => ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 20,
+        itemBuilder: (context, index) {
+          return const ArtistCardLoading();
+        },
+      ),
       error: (error, stackTrace) => const Center(
         child: Text('Failed to load recent artists'),
       ),

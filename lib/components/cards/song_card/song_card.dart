@@ -19,7 +19,13 @@ class SongCard extends ConsumerWidget {
           },
         );
       },
-      loading: () => const SongCardLoading(),
+      loading: () => ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 20,
+        itemBuilder: (context, index) {
+          return const SongCardLoading();
+        },
+      ),
       error: (error, stackTrace) => const Center(
         child: Text('Failed to load recent songs'),
       ),
