@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:harmony/models/playback_state.dart';
+import 'package:harmony/providers/exceptions/no_content_exception.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,15 +39,4 @@ Stream<PlaybackState> playbackStateStream(PlaybackStateStreamRef ref) async* {
     final json = jsonDecode(response.body) as Map<String, dynamic>;
     return PlaybackState.fromJson(json);
   });
-}
-
-class NoContentException implements Exception {
-  final String message;
-
-  NoContentException(this.message);
-
-  @override
-  String toString() {
-    return 'NoContentException: $message';
-  }
 }
