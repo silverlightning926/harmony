@@ -25,7 +25,7 @@ class NowPlayingCard extends StatelessWidget {
               image: DecorationImage(
                 matchTextDirection: true,
                 image: NetworkImage(
-                  playbackState.item.album.images.first.url,
+                  playbackState.item?.album?.images?.first.url ?? '',
                 ),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
@@ -64,7 +64,7 @@ class NowPlayingCard extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.bottomLeft,
                             child: AutoSizeText(
-                              playbackState.item.name,
+                              playbackState.item?.name ?? '',
                               style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
@@ -76,9 +76,10 @@ class NowPlayingCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          playbackState.item.artists
-                              .map((artist) => artist.name)
-                              .join(', '),
+                          playbackState.item?.artists
+                                  ?.map((artist) => artist.name)
+                                  .join(', ') ??
+                              '',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.normal,
