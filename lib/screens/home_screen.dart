@@ -29,11 +29,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 return NowPlayingCard(
                     playbackState: data, isPlaying: data.isPlaying ?? false);
               },
-              loading: () => ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Shimmer(
-                  child: Container(
-                    height: 200,
+              loading: () => Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Shimmer(
+                    child: Container(
+                      height: 200,
+                    ),
                   ),
                 ),
               ),
