@@ -5,12 +5,12 @@ import 'context.dart';
 import 'device.dart';
 import 'item.dart';
 
-part 'playback_state.freezed.dart';
-part 'playback_state.g.dart';
+part 'currently_playing_state.freezed.dart';
+part 'currently_playing_state.g.dart';
 
 @freezed
-class PlaybackState with _$PlaybackState {
-  factory PlaybackState({
+class CurrentlyPlayingState with _$CurrentlyPlayingState {
+  factory CurrentlyPlayingState({
     Device? device,
     @JsonKey(name: 'repeat_state') String? repeatState,
     @JsonKey(name: 'shuffle_state') bool? shuffleState,
@@ -21,8 +21,8 @@ class PlaybackState with _$PlaybackState {
     Item? item,
     @JsonKey(name: 'currently_playing_type') String? currentlyPlayingType,
     Actions? actions,
-  }) = _PlaybackState;
+  }) = _CurrentlyPlayingState;
 
-  factory PlaybackState.fromJson(Map<String, dynamic> json) =>
-      _$PlaybackStateFromJson(json);
+  factory CurrentlyPlayingState.fromJson(Map<String, dynamic> json) =>
+      _$CurrentlyPlayingStateFromJson(json);
 }

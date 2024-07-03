@@ -2,10 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:harmony/models/playback_state.dart';
+import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
 
 class NowPlayingCardData extends StatelessWidget {
-  final PlaybackState playbackState;
+  final CurrentlyPlayingState playbackState;
   final bool isPlaying;
 
   const NowPlayingCardData({

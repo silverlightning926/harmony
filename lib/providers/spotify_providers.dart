@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:harmony/models/playback_state.dart';
+import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
 import 'package:harmony/providers/exceptions/no_content_exception.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:http/http.dart' as http;
@@ -11,9 +11,11 @@ part 'spotify_providers.g.dart';
 
 const _baseUrl = 'https://api.spotify.com/v1';
 const _playerCurrentlyPlayingEndpoint = '$_baseUrl/me/player/currently-playing';
+const _recentlyPlayedEndpoint = '$_baseUrl/me/player/recently-played';
 
 @riverpod
-Stream<PlaybackState> playbackStateStream(PlaybackStateStreamRef ref) async* {
+Stream<CurrentlyPlayingState> playbackStateStream(
+    PlaybackStateStreamRef ref) async* {
   final token = await ref.read(fetchSavedTokenProvider.future);
 
   if (token == null) {
@@ -27,7 +29,7 @@ Stream<PlaybackState> playbackStateStream(PlaybackStateStreamRef ref) async* {
   );
 }
 
-Future<PlaybackState> _fetchPlaybackState(String accessToken) async {
+Future<CurrentlyPlayingState> _fetchPlaybackState(String accessToken) async {
   final response = await http.get(
     Uri.parse(_playerCurrentlyPlayingEndpoint),
     headers: {
@@ -44,5 +46,5 @@ Future<PlaybackState> _fetchPlaybackState(String accessToken) async {
   }
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
-  return PlaybackState.fromJson(json);
+  return CurrentlyPlayingState.fromJson(json);
 }
