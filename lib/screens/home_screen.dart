@@ -6,22 +6,47 @@ import 'package:harmony/components/sections/recent_artist_section.dart';
 import 'package:harmony/components/sections/recent_song_section.dart';
 import 'package:harmony/providers/spotify_providers.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  Widget build(BuildContext context) {
     final playbackState = ref.watch(playbackStateStreamProvider);
+    bool isPlaying = true;
+
     return PopScope(
       child: Scaffold(
         appBar: const SubtitleAppBar(),
         body: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            playbackState.when(
-              data: (data) => NowPlayingCard(playbackState: data),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => Text('Error: $error'),
+            Visibility(
+              visible: isPlaying,
+              child: playbackState.when(
+                data: (data) {
+                  setState(() {
+                    isPlaying = false;
+                  });
+                  return NowPlayingCard(playbackState: data);
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, _) {
+                  setState(() {
+                    isPlaying = false;
+                  });
+
+                  return Center(
+                    child: Text(
+                      error.toString(),
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 20),
             const RecentSongsSection(),

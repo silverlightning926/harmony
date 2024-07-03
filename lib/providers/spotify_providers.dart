@@ -27,10 +27,26 @@ Stream<PlaybackState> playbackStateStream(PlaybackStateStreamRef ref) async* {
       },
     );
 
-    if (response.statusCode == 200) {
-      return PlaybackState.fromJson(jsonDecode(response.body));
-    } else {
+    if (response.statusCode == 204) {
+      throw NoContentException('No content');
+    }
+
+    if (response.statusCode != 200) {
       throw Exception('Failed to load playback state');
     }
+
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    return PlaybackState.fromJson(json);
   });
+}
+
+class NoContentException implements Exception {
+  final String message;
+
+  NoContentException(this.message);
+
+  @override
+  String toString() {
+    return 'NoContentException: $message';
+  }
 }
