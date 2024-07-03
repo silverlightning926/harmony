@@ -26,9 +26,7 @@ class SongCard extends ConsumerWidget {
           return const SongCardLoading();
         },
       ),
-      error: (error, stackTrace) => const Center(
-        child: Text('Failed to load recent songs'),
-      ),
+      error: (error, stackTrace) => const SizedBox.shrink(),
     );
   }
 }

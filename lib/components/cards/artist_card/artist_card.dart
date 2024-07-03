@@ -27,9 +27,9 @@ class ArtistCard extends ConsumerWidget {
           return const ArtistCardLoading();
         },
       ),
-      error: (error, stackTrace) => const Center(
-        child: Text('Failed to load recent artists'),
-      ),
+      error: (error, stackTrace) {
+        return const SizedBox.shrink();
+      },
     );
   }
 }
