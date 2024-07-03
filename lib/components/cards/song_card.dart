@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:harmony/models/recently_played_state/item.dart';
 
 // TODO: Replace placeholder with actual song data
@@ -45,9 +46,11 @@ class SongCard extends StatelessWidget {
                         children: [
                           Text(
                             item.track?.name ?? '',
-                            style: const TextStyle(
-                              fontSize: 20,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
                               fontWeight: FontWeight.bold,
+                              fontSize: 20,
                             ),
                           ),
                           Text(
@@ -55,7 +58,7 @@ class SongCard extends StatelessWidget {
                                     ?.map((artist) => artist.name)
                                     .join(', ') ??
                                 '',
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 15,
                               fontWeight: FontWeight.w300,
                             ),

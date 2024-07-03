@@ -8,7 +8,6 @@ environment:
 
 dependencies:
   audio_video_progress_bar: ^2.0.3
-  auto_size_text: ^3.0.0
   envied: ^0.5.4+1
   flutter:
     sdk: flutter

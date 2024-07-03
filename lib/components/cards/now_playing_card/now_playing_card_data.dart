@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -81,36 +80,27 @@ class NowPlayingCardData extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                height: 100,
-                                child: Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: AutoSizeText(
-                                    playbackState.item?.name ?? '',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 4,
-                                    maxFontSize: 30,
-                                  ),
+                              Text(
+                                playbackState.item?.name ?? '',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 3),
-                              SizedBox(
-                                height: 20,
-                                child: AutoSizeText(
-                                  playbackState.item?.artists
-                                          ?.map((artist) => artist.name)
-                                          .join(', ') ??
-                                      '',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                  maxFontSize: 16,
-                                  maxLines: 1,
+                              Text(
+                                playbackState.item?.artists
+                                        ?.map((artist) => artist.name)
+                                        .join(', ') ??
+                                    '',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
                                 ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
                               ),
                             ],
                           ),
