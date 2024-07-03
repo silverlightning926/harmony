@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:harmony/models/playback_state.dart';
 
-class NowPlayingCard extends StatelessWidget {
+class NowPlayingCardData extends StatelessWidget {
   final PlaybackState playbackState;
   final bool isPlaying;
 
-  const NowPlayingCard({
+  const NowPlayingCardData({
     super.key,
     required this.playbackState,
     required this.isPlaying,
