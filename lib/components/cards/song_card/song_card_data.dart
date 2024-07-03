@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:harmony/models/recently_played_state/item.dart';
 
-// TODO: Replace placeholder with actual song data
-
-class SongCard extends StatelessWidget {
+class SongCardData extends StatelessWidget {
   final Item item;
 
-  const SongCard({
+  const SongCardData({
     super.key,
     required this.item,
   });

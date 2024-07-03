@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:harmony/models/artists/artist.dart';
 
-// TODO: Replace placeholder with actual artist data
-
-class ArtistCard extends StatelessWidget {
+class ArtistCardData extends StatelessWidget {
   final Artist artist;
 
-  const ArtistCard({super.key, required this.artist});
+  const ArtistCardData({super.key, required this.artist});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +38,7 @@ class ArtistCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 17,
+                    fontSize: 20,
                   ),
                 ),
               ),
