@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:harmony/models/playback_state.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
@@ -27,7 +28,7 @@ Stream<PlaybackState> playbackStateStream(PlaybackStateStreamRef ref) async* {
     );
 
     if (response.statusCode == 200) {
-      return playBackstateFromJson(response.body);
+      return PlaybackState.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load playback state');
     }
