@@ -1,11 +1,14 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// TODO: Replace placeholder data with actual data
+import 'package:harmony/models/playback_state.dart';
 
 class NowPlayingCard extends StatelessWidget {
+  final PlaybackState playbackState;
+
   const NowPlayingCard({
     super.key,
+    required this.playbackState,
   });
 
   @override
@@ -21,8 +24,8 @@ class NowPlayingCard extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 matchTextDirection: true,
-                image: const NetworkImage(
-                  "https://i.scdn.co/image/ab67616d0000b273d58e537cea05c2156792c53d",
+                image: NetworkImage(
+                  playbackState.item.album.images.first.url,
                 ),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
@@ -50,25 +53,35 @@ class NowPlayingCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Align(
+                Align(
                   alignment: Alignment.bottomLeft,
                   child: IntrinsicHeight(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Money Trees",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                        SizedBox(
+                          height: 100,
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: AutoSizeText(
+                              playbackState.item.name,
+                              style: const TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 4,
+                              maxFontSize: 30,
+                            ),
                           ),
                         ),
-                        SizedBox(height: 3),
+                        const SizedBox(height: 3),
                         Text(
-                          "Kendrick Lamar, Jay Rock",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                          playbackState.item.artists
+                              .map((artist) => artist.name)
+                              .join(', '),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                       ],
