@@ -5,6 +5,7 @@ import 'package:harmony/components/navigation/subtitle_appbar.dart';
 import 'package:harmony/components/sections/recent_artist_section.dart';
 import 'package:harmony/components/sections/recent_song_section.dart';
 import 'package:harmony/providers/spotify_providers.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +34,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   });
                   return NowPlayingCard(playbackState: data);
                 },
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Shimmer(
+                    child: Container(
+                      height: 200,
+                    ),
+                  ),
+                ),
                 error: (error, _) {
                   setState(() {
                     isPlaying = false;
