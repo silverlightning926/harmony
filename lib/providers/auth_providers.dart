@@ -5,8 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_providers.g.dart';
 
-const _clientId = Env.spotifyClientId;
-const _clientSecret = Env.spotifyClientSecret;
+final _clientId = Env.spotifyClientId;
+final _clientSecret = Env.spotifyClientSecret;
 const _issuer = 'https://accounts.spotify.com';
 const _redirectUri = 'com.novalabs.harmony:/oauth2redirect';
 const _scopes = [
