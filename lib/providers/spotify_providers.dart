@@ -25,7 +25,7 @@ Stream<CurrentlyPlayingState> playbackStateStream(
 
   yield await _fetchPlaybackState(token.accessToken!);
 
-  yield* Stream.periodic(const Duration(seconds: 10)).asyncMap(
+  yield* Stream.periodic(const Duration(seconds: 15)).asyncMap(
     (_) async => _fetchPlaybackState(token.accessToken!),
   );
 }

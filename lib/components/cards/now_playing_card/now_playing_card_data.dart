@@ -22,6 +22,12 @@ class NowPlayingCardData extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 20),
         child: Animate(
           effects: const [
+            MoveEffect(
+              begin: Offset(0, 10),
+              end: Offset(0, 0),
+              curve: Curves.easeInOut,
+              duration: Duration(milliseconds: 300),
+            ),
             FadeEffect(
               begin: 0,
               end: 1,
@@ -81,7 +87,7 @@ class NowPlayingCardData extends StatelessWidget {
                                   alignment: Alignment.bottomLeft,
                                   child: AutoSizeText(
                                     playbackState.item?.name ?? '',
-                                    style: const TextStyle(
+                                    style: GoogleFonts.poppins(
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -91,14 +97,19 @@ class NowPlayingCardData extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 3),
-                              Text(
-                                playbackState.item?.artists
-                                        ?.map((artist) => artist.name)
-                                        .join(', ') ??
-                                    '',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.normal,
+                              SizedBox(
+                                height: 20,
+                                child: AutoSizeText(
+                                  playbackState.item?.artists
+                                          ?.map((artist) => artist.name)
+                                          .join(', ') ??
+                                      '',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  maxFontSize: 16,
+                                  maxLines: 1,
                                 ),
                               ),
                             ],
