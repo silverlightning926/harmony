@@ -20,23 +20,29 @@ Stream<PlaybackState> playbackStateStream(PlaybackStateStreamRef ref) async* {
     throw Exception('Token not found');
   }
 
-  yield* Stream.periodic(const Duration(seconds: 10)).asyncMap((_) async {
-    final response = await http.get(
-      Uri.parse(_playerCurrentlyPlayingEndpoint),
-      headers: {
-        'Authorization': 'Bearer ${token.accessToken}',
-      },
-    );
+  yield await _fetchPlaybackState(token.accessToken!);
 
-    if (response.statusCode == 204) {
-      throw NoContentException('No content');
-    }
+  yield* Stream.periodic(const Duration(seconds: 10)).asyncMap(
+    (_) async => _fetchPlaybackState(token.accessToken!),
+  );
+}
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load playback state');
-    }
+Future<PlaybackState> _fetchPlaybackState(String accessToken) async {
+  final response = await http.get(
+    Uri.parse(_playerCurrentlyPlayingEndpoint),
+    headers: {
+      'Authorization': 'Bearer $accessToken',
+    },
+  );
 
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-    return PlaybackState.fromJson(json);
-  });
+  if (response.statusCode == 204) {
+    throw NoContentException('No content');
+  }
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load playback state');
+  }
+
+  final json = jsonDecode(response.body) as Map<String, dynamic>;
+  return PlaybackState.fromJson(json);
 }
