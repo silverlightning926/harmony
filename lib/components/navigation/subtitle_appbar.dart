@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,20 +17,25 @@ class SubtitleAppBar extends ConsumerWidget implements PreferredSizeWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 45),
-          GradientAnimationText(
-            text: Text(
+          Animate(
+            effects: const [
+              ShimmerEffect(
+                colors: [
+                  Colors.pinkAccent,
+                  Colors.pink,
+                  Colors.orangeAccent,
+                ],
+                duration: Duration(seconds: 4),
+                curve: Curves.easeInOut,
+              ),
+            ],
+            child: Text(
               'Harmony',
               style: GoogleFonts.poppins(
                 fontSize: 45,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            colors: const [
-              Color(0xFF9C4DCC),
-              Color(0xFFEA76CB),
-            ],
-            duration: const Duration(seconds: 30),
-            transform: const GradientRotation(1.5 * pi),
           ),
           const SizedBox(height: 7),
           Text(
