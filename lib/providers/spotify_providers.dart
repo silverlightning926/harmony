@@ -77,7 +77,7 @@ Stream<RecentlyPlayedState> recentlyPlayedStateStream(
 
   yield await _fetchRecentlyPlayed(token.accessToken!);
 
-  yield* Stream.periodic(const Duration(minutes: 1)).asyncMap(
+  yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
     (_) async => _fetchRecentlyPlayed(token.accessToken!),
   );
 }
