@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:harmony/models/artists/artist.dart';
 import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
 import 'package:harmony/models/recently_played_state/recently_played_state.dart';
 import 'package:harmony/providers/exceptions/no_content_exception.dart';
@@ -13,6 +14,7 @@ part 'spotify_providers.g.dart';
 const _baseUrl = 'https://api.spotify.com/v1';
 const _playerCurrentlyPlayingEndpoint = '$_baseUrl/me/player/currently-playing';
 const _recentlyPlayedEndpoint = '$_baseUrl/me/player/recently-played';
+const _multipleArtistsEndpoint = '$_baseUrl/artists';
 
 @riverpod
 Stream<CurrentlyPlayingState> playbackStateStream(
@@ -79,5 +81,63 @@ Stream<RecentlyPlayedState> recentlyPlayedStateStream(
 
   yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
     (_) async => _fetchRecentlyPlayed(token.accessToken!),
+  );
+}
+
+@riverpod
+Future<List<Artist>> fetchArtists(FetchArtistsRef ref, List artistIDs) async {
+  final token = await ref.read(fetchSavedTokenProvider.future);
+
+  if (token == null) {
+    throw Exception('Token not found');
+  }
+
+  final response = await http.get(
+    Uri.parse('$_multipleArtistsEndpoint?ids=${artistIDs.join(',')}'),
+    headers: {
+      'Authorization': 'Bearer ${token.accessToken}',
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load artists');
+  }
+
+  final json = jsonDecode(response.body) as Map<String, dynamic>;
+  final artists = json['artists'] as List;
+
+  return artists.map((artist) => Artist.fromJson(artist)).toList();
+}
+
+Future<List<Artist>> _fetchArtistsFromRecentlyPlayed(
+    FetchArtistsFromRecentlyPlayedRef ref) async {
+  final token = await ref.read(fetchSavedTokenProvider.future);
+
+  if (token == null) {
+    throw Exception('Token not found');
+  }
+
+  final recentlyPlayed = await _fetchRecentlyPlayed(token.accessToken!);
+
+  final artistIDs = recentlyPlayed.items!
+      .map((item) => item.track!.artists!.map((artist) => artist.id))
+      .expand((ids) => ids)
+      .toSet()
+      .toList();
+
+  if (artistIDs.isEmpty) {
+    return [];
+  }
+
+  return await ref.read(fetchArtistsProvider(artistIDs).future);
+}
+
+@riverpod
+Stream<List<Artist>> fetchArtistsFromRecentlyPlayed(
+    FetchArtistsFromRecentlyPlayedRef ref) async* {
+  yield await _fetchArtistsFromRecentlyPlayed(ref);
+
+  yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
+    (_) async => _fetchArtistsFromRecentlyPlayed(ref),
   );
 }

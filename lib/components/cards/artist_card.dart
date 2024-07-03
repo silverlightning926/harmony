@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:harmony/models/artists/artist.dart';
 
 // TODO: Replace placeholder with actual artist data
 
 class ArtistCard extends StatelessWidget {
-  const ArtistCard({super.key});
+  final Artist artist;
+
+  const ArtistCard({super.key, required this.artist});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +22,8 @@ class ArtistCard extends StatelessWidget {
               width: 150,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: const NetworkImage(
-                    "https://i.scdn.co/image/ab67616d00001e0226d64b6150aa3d9b6b67d857",
+                  image: NetworkImage(
+                    artist.images!.first.url!,
                   ),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
@@ -29,13 +32,15 @@ class ArtistCard extends StatelessWidget {
                   ),
                 ),
               ),
-              child: const Align(
+              child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  "Childish Gambino",
-                  style: TextStyle(
-                    fontSize: 20,
+                  artist.name!,
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 17,
                   ),
                 ),
               ),
