@@ -11,7 +11,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playbackState = ref.watch(fetchPlaybackStateProvider);
+    final playbackState = ref.watch(playbackStateStreamProvider);
     return PopScope(
       child: Scaffold(
         appBar: const SubtitleAppBar(),
@@ -19,7 +19,7 @@ class HomeScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(20),
           children: [
             playbackState.when(
-              data: (data) => NowPlayingCard(playbackState: data!),
+              data: (data) => NowPlayingCard(playbackState: data),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => Text('Error: $error'),
             ),
