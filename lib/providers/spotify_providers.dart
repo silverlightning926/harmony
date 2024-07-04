@@ -51,7 +51,14 @@ Future<CurrentlyPlayingState> _fetchCurrentlyPlayingState(
   }
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
-  return CurrentlyPlayingState.fromJson(json);
+  final currentPlayingState = CurrentlyPlayingState.fromJson(json);
+
+  if (currentPlayingState.item!.type != 'track' ||
+      currentPlayingState.isPlaying == false) {
+    throw NoContentException('No content');
+  }
+
+  return currentPlayingState;
 }
 
 Future<RecentlyPlayedState> _fetchRecentlyPlayedState(

@@ -14,7 +14,6 @@ class NowPlayingCard extends ConsumerWidget {
       data: (data) {
         return NowPlayingCardData(
           item: data.item!,
-          isPlaying: data.isPlaying!,
         );
       },
       loading: () => const NowPlayingCardLoading(),
