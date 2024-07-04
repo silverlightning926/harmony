@@ -7,7 +7,7 @@ class RecomendedSongSection extends ConsumerWidget {
   const RecomendedSongSection({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (!ref.watch(recentSongSectionVisibilityProvider)) {
+    if (!ref.watch(recommendationSectionVisibilityProvider)) {
       return const SizedBox.shrink();
     }
     return const Padding(
