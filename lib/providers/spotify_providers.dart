@@ -17,10 +17,14 @@ const _playerCurrentlyPlayingEndpoint = '$_baseUrl/me/player/currently-playing';
 const _recentlyPlayedEndpoint = '$_baseUrl/me/player/recently-played';
 const _multipleArtistsEndpoint = '$_baseUrl/artists';
 
+const _currentlyPlayingUpdateInterval = Duration(seconds: 15);
+const _recentlyPlayedUpdateInterval = Duration(minutes: 2, seconds: 15);
+const _recentlyPlayedArtistsUpdateInterval = Duration(minutes: 2, seconds: 15);
+
 @riverpod
 Stream<CurrentlyPlayingState> currentlyPlayingStateStream(
     CurrentlyPlayingStateStreamRef ref) async* {
-  final token = await ref.read(fetchSavedTokenProvider.future);
+  final token = await ref.watch(fetchSavedTokenProvider.future);
 
   if (token == null) {
     throw Exception('Token not found');
@@ -28,7 +32,7 @@ Stream<CurrentlyPlayingState> currentlyPlayingStateStream(
 
   yield await _fetchCurrentlyPlayingState(token.accessToken!);
 
-  yield* Stream.periodic(const Duration(seconds: 15)).asyncMap(
+  yield* Stream.periodic(_currentlyPlayingUpdateInterval).asyncMap(
     (_) async => _fetchCurrentlyPlayingState(token.accessToken!),
   );
 }
@@ -89,7 +93,7 @@ Future<List<Track>> _fetchRecentlyPlayedTracks(String accessToken) async {
 @riverpod
 Stream<List<Track>> recentlyPlayedTracksStream(
     RecentlyPlayedTracksStreamRef ref) async* {
-  final token = await ref.read(fetchSavedTokenProvider.future);
+  final token = await ref.watch(fetchSavedTokenProvider.future);
 
   if (token == null) {
     throw Exception('Token not found');
@@ -97,7 +101,7 @@ Stream<List<Track>> recentlyPlayedTracksStream(
 
   yield await _fetchRecentlyPlayedTracks(token.accessToken!);
 
-  yield* Stream.periodic(const Duration(minutes: 2, seconds: 15)).asyncMap(
+  yield* Stream.periodic(_recentlyPlayedUpdateInterval).asyncMap(
     (_) async => _fetchRecentlyPlayedTracks(token.accessToken!),
   );
 }
@@ -138,22 +142,19 @@ Future<List<Artist>> _fetchRecentlyPlayedArtists(
 @riverpod
 Stream<List<Artist>> fetchRecentlyPlayedArtistStream(
     FetchRecentlyPlayedArtistStreamRef ref) async* {
-  final token = await ref.read(fetchSavedTokenProvider.future);
+  final token = await ref.watch(fetchSavedTokenProvider.future);
 
   if (token == null) {
     throw Exception('Token not found');
   }
 
   final recentlyPlayedTracks =
-      await ref.read(recentlyPlayedTracksStreamProvider.future);
+      await ref.watch(recentlyPlayedTracksStreamProvider.future);
   yield await _fetchRecentlyPlayedArtists(
       token.accessToken!, recentlyPlayedTracks);
 
-  yield* Stream.periodic(const Duration(minutes: 2, seconds: 15))
-      .asyncMap((_) async {
-    final recentlyPlayedTracks =
-        await ref.read(recentlyPlayedTracksStreamProvider.future);
-    return _fetchRecentlyPlayedArtists(
-        token.accessToken!, recentlyPlayedTracks);
-  });
+  yield* Stream.periodic(_recentlyPlayedArtistsUpdateInterval).asyncMap(
+    (_) async =>
+        _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks),
+  );
 }
