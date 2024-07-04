@@ -30,7 +30,7 @@ class SuggestionCard extends ConsumerWidget {
       ),
       error: (error, stackTrace) {
         Future.microtask(() {
-          ref.read(recentSongSectionVisibilityProvider.notifier).hide();
+          ref.read(recommendationSectionVisibilityProvider.notifier).hide();
         });
         return const SizedBox.shrink();
       },
