@@ -16,6 +16,7 @@ const _baseUrl = 'https://api.spotify.com/v1';
 const _playerCurrentlyPlayingEndpoint = '$_baseUrl/me/player/currently-playing';
 const _recentlyPlayedEndpoint = '$_baseUrl/me/player/recently-played';
 const _multipleArtistsEndpoint = '$_baseUrl/artists';
+const _recommendationsEndpoint = '$_baseUrl/recommendations';
 
 const _currentlyPlayingUpdateInterval = Duration(seconds: 15);
 const _recentlyPlayedUpdateInterval = Duration(minutes: 2, seconds: 15);
@@ -151,4 +152,45 @@ Future<List<Artist>> fetchRecentlyPlayedArtists(
       await ref.watch(recentlyPlayedTracksStreamProvider.future);
 
   return _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks);
+}
+
+Future<List<Track>> _fetchRecommendations(
+    String accessToken, List<String> seedTrackIds) async {
+  final response = await http.get(
+    Uri.parse(
+        '$_recommendationsEndpoint?seed_tracks=${seedTrackIds.join(',')}'),
+    headers: {
+      'Authorization': 'Bearer $accessToken',
+      'seed_tracks': seedTrackIds.join(','),
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load recommendations');
+  }
+
+  final json = jsonDecode(response.body) as Map<String, dynamic>;
+  final tracks = json['tracks'] as List;
+
+  return tracks.map((track) => Track.fromJson(track)).toList();
+}
+
+@riverpod
+Future<List<Track>> fetchRecommendations(FetchRecommendationsRef ref) async {
+  final token = await ref.watch(fetchSavedTokenProvider.future);
+
+  if (token == null) {
+    throw Exception('Token not found');
+  }
+
+  final recentlyPlayedTracks =
+      await ref.watch(recentlyPlayedTracksStreamProvider.future);
+
+  final seedTrackIds = recentlyPlayedTracks.reversed
+      .map((track) => track.id!)
+      .toSet()
+      .take(5)
+      .toList();
+
+  return _fetchRecommendations(token.accessToken!, seedTrackIds);
 }

@@ -16,3 +16,8 @@ final recentArtistSectionVisibilityProvider =
     StateNotifierProvider<SectionVisibilityNotifier, bool>(
   (ref) => SectionVisibilityNotifier(),
 );
+
+final recentAlbumSectionVisibilityProvider =
+    StateNotifierProvider<SectionVisibilityNotifier, bool>(
+  (ref) => SectionVisibilityNotifier(),
+);

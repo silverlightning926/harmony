@@ -3,6 +3,7 @@ import 'package:harmony/components/cards/now_playing_card/now_playing_card.dart'
 import 'package:harmony/components/navigation/subtitle_appbar.dart';
 import 'package:harmony/components/sections/recent_artist_section.dart';
 import 'package:harmony/components/sections/recent_song_section.dart';
+import 'package:harmony/components/sections/recomended_song_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,6 +19,7 @@ class HomeScreen extends StatelessWidget {
             NowPlayingCard(),
             RecentSongsSection(),
             RecentArtistsSection(),
+            RecomendedSongSection(),
           ],
         ),
       ),
