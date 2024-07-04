@@ -19,7 +19,6 @@ const _multipleArtistsEndpoint = '$_baseUrl/artists';
 
 const _currentlyPlayingUpdateInterval = Duration(seconds: 15);
 const _recentlyPlayedUpdateInterval = Duration(minutes: 2, seconds: 15);
-const _recentlyPlayedArtistsUpdateInterval = Duration(minutes: 2, seconds: 15);
 
 @riverpod
 Stream<CurrentlyPlayingState> currentlyPlayingStateStream(
@@ -148,13 +147,6 @@ Stream<List<Artist>> fetchRecentlyPlayedArtistStream(
     throw Exception('Token not found');
   }
 
-  final recentlyPlayedTracks =
-      await ref.watch(recentlyPlayedTracksStreamProvider.future);
-  yield await _fetchRecentlyPlayedArtists(
-      token.accessToken!, recentlyPlayedTracks);
-
-  yield* Stream.periodic(_recentlyPlayedArtistsUpdateInterval).asyncMap(
-    (_) async =>
-        _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks),
-  );
+  yield await _fetchRecentlyPlayedArtists(token.accessToken!,
+      await ref.watch(recentlyPlayedTracksStreamProvider.future));
 }
