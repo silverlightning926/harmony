@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harmony/components/cards/artist_card/artist_card.dart';
+import 'package:harmony/providers/section_visibility_notifier.dart';
 
 class RecentArtistsSection extends ConsumerWidget {
   const RecentArtistsSection({
@@ -9,6 +10,10 @@ class RecentArtistsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(recentArtistSectionVisibilityProvider)) {
+      return const SizedBox.shrink();
+    }
+
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harmony/components/cards/song_card/song_card_data.dart';
 import 'package:harmony/components/cards/song_card/song_card_loading.dart';
+import 'package:harmony/providers/section_visibility_notifier.dart';
 import 'package:harmony/providers/spotify_providers.dart';
 
 class SongCard extends ConsumerWidget {
@@ -9,6 +10,7 @@ class SongCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recentlyPlayedState = ref.watch(recentlyPlayedTracksStreamProvider);
+
     return recentlyPlayedState.when(
       data: (data) {
         return ListView.builder(
@@ -26,7 +28,12 @@ class SongCard extends ConsumerWidget {
           return const SongCardLoading();
         },
       ),
-      error: (error, stackTrace) => const SizedBox.shrink(),
+      error: (error, stackTrace) {
+        Future.microtask(() {
+          ref.read(recentSongSectionVisibilityProvider.notifier).hide();
+        });
+        return const SizedBox.shrink();
+      },
     );
   }
 }
