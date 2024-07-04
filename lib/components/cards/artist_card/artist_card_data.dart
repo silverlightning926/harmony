@@ -36,9 +36,10 @@ class ArtistCardData extends StatelessWidget {
                 width: 150,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                      artist.images!.first.url!,
-                    ),
+                    image: artist.images!.isNotEmpty
+                        ? NetworkImage(artist.images!.first.url!)
+                        : const AssetImage(
+                            'assets/images/artist_placeholder.jpg'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.6),
