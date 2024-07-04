@@ -139,14 +139,16 @@ Future<List<Artist>> _fetchRecentlyPlayedArtists(
 }
 
 @riverpod
-Stream<List<Artist>> fetchRecentlyPlayedArtistStream(
-    FetchRecentlyPlayedArtistStreamRef ref) async* {
+Future<List<Artist>> fetchRecentlyPlayedArtists(
+    FetchRecentlyPlayedArtistsRef ref) async {
   final token = await ref.watch(fetchSavedTokenProvider.future);
 
   if (token == null) {
     throw Exception('Token not found');
   }
 
-  yield await _fetchRecentlyPlayedArtists(token.accessToken!,
-      await ref.watch(recentlyPlayedTracksStreamProvider.future));
+  final recentlyPlayedTracks =
+      await ref.watch(recentlyPlayedTracksStreamProvider.future);
+
+  return _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks);
 }
