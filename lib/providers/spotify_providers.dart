@@ -90,7 +90,7 @@ Stream<List<Track>> recentlyPlayedTracksStream(
 
   yield await _fetchRecentlyPlayedTracks(token.accessToken!);
 
-  yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
+  yield* Stream.periodic(const Duration(minutes: 2, seconds: 15)).asyncMap(
     (_) async => _fetchRecentlyPlayedTracks(token.accessToken!),
   );
 }
@@ -142,8 +142,11 @@ Stream<List<Artist>> fetchRecentlyPlayedArtistStream(
   yield await _fetchRecentlyPlayedArtists(
       token.accessToken!, recentlyPlayedTracks);
 
-  yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
-    (_) async =>
-        _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks),
-  );
+  yield* Stream.periodic(const Duration(minutes: 2, seconds: 15))
+      .asyncMap((_) async {
+    final recentlyPlayedTracks =
+        await ref.read(recentlyPlayedTracksStreamProvider.future);
+    return _fetchRecentlyPlayedArtists(
+        token.accessToken!, recentlyPlayedTracks);
+  });
 }
