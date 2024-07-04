@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
+import 'package:harmony/models/currently_playing_state/item.dart';
 
 class NowPlayingCardData extends StatelessWidget {
-  final CurrentlyPlayingState playbackState;
+  final Item item;
   final bool isPlaying;
 
   const NowPlayingCardData({
     super.key,
-    required this.playbackState,
+    required this.item,
     required this.isPlaying,
   });
 
@@ -46,7 +46,7 @@ class NowPlayingCardData extends StatelessWidget {
                     image: DecorationImage(
                       matchTextDirection: true,
                       image: NetworkImage(
-                        playbackState.item?.album?.images?.first.url ?? '',
+                        item.album?.images?.first.url ?? '',
                       ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
@@ -81,7 +81,7 @@ class NowPlayingCardData extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                playbackState.item?.name ?? '',
+                                item.name ?? '',
                                 style: GoogleFonts.poppins(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class NowPlayingCardData extends StatelessWidget {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                playbackState.item?.artists
+                                item.artists
                                         ?.map((artist) => artist.name)
                                         .join(', ') ??
                                     '',

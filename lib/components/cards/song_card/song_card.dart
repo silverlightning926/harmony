@@ -8,14 +8,14 @@ class SongCard extends ConsumerWidget {
   const SongCard({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recentlyPlayedState = ref.watch(recentlyPlayedStateStreamProvider);
+    final recentlyPlayedState = ref.watch(recentlyPlayedTracksStreamProvider);
     return recentlyPlayedState.when(
       data: (data) {
         return ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: data.items?.length ?? 0,
+          itemCount: data.length,
           itemBuilder: (context, index) {
-            return SongCardData(item: data.items![index]);
+            return SongCardData(track: data[index]);
           },
         );
       },

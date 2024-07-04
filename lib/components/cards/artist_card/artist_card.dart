@@ -9,7 +9,7 @@ class ArtistCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fetchArtistsFromRecentlyPlayed =
-        ref.watch(fetchArtistsFromRecentlyPlayedProvider);
+        ref.watch(fetchRecentlyPlayedArtistStreamProvider);
     return fetchArtistsFromRecentlyPlayed.when(
       data: (data) {
         return ListView.builder(

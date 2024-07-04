@@ -8,13 +8,13 @@ class NowPlayingCard extends ConsumerWidget {
   const NowPlayingCard({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playbackState = ref.watch(playbackStateStreamProvider);
+    final playbackState = ref.watch(currentlyPlayingStateStreamProvider);
 
     return playbackState.when(
       data: (data) {
         return NowPlayingCardData(
-          playbackState: data,
-          isPlaying: data.isPlaying ?? false,
+          item: data.item!,
+          isPlaying: data.isPlaying!,
         );
       },
       loading: () => const NowPlayingCardLoading(),

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:harmony/models/artists/artist.dart';
 import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
 import 'package:harmony/models/recently_played_state/recently_played_state.dart';
+import 'package:harmony/models/recently_played_state/track.dart';
 import 'package:harmony/providers/exceptions/no_content_exception.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:http/http.dart' as http;
@@ -17,22 +18,23 @@ const _recentlyPlayedEndpoint = '$_baseUrl/me/player/recently-played';
 const _multipleArtistsEndpoint = '$_baseUrl/artists';
 
 @riverpod
-Stream<CurrentlyPlayingState> playbackStateStream(
-    PlaybackStateStreamRef ref) async* {
+Stream<CurrentlyPlayingState> currentlyPlayingStateStream(
+    CurrentlyPlayingStateStreamRef ref) async* {
   final token = await ref.read(fetchSavedTokenProvider.future);
 
   if (token == null) {
     throw Exception('Token not found');
   }
 
-  yield await _fetchPlaybackState(token.accessToken!);
+  yield await _fetchCurrentlyPlayingState(token.accessToken!);
 
   yield* Stream.periodic(const Duration(seconds: 15)).asyncMap(
-    (_) async => _fetchPlaybackState(token.accessToken!),
+    (_) async => _fetchCurrentlyPlayingState(token.accessToken!),
   );
 }
 
-Future<CurrentlyPlayingState> _fetchPlaybackState(String accessToken) async {
+Future<CurrentlyPlayingState> _fetchCurrentlyPlayingState(
+    String accessToken) async {
   final response = await http.get(
     Uri.parse(_playerCurrentlyPlayingEndpoint),
     headers: {
@@ -52,7 +54,8 @@ Future<CurrentlyPlayingState> _fetchPlaybackState(String accessToken) async {
   return CurrentlyPlayingState.fromJson(json);
 }
 
-Future<RecentlyPlayedState> _fetchRecentlyPlayed(String accessToken) async {
+Future<RecentlyPlayedState> _fetchRecentlyPlayedState(
+    String accessToken) async {
   final response = await http.get(
     Uri.parse(_recentlyPlayedEndpoint),
     headers: {
@@ -68,34 +71,35 @@ Future<RecentlyPlayedState> _fetchRecentlyPlayed(String accessToken) async {
   return RecentlyPlayedState.fromJson(json);
 }
 
-@riverpod
-Stream<RecentlyPlayedState> recentlyPlayedStateStream(
-    RecentlyPlayedStateStreamRef ref) async* {
-  final token = await ref.read(fetchSavedTokenProvider.future);
+Future<List<Track>> _fetchRecentlyPlayedTracks(String accessToken) async {
+  final recentlyPlayed = await _fetchRecentlyPlayedState(accessToken);
+  final uniqueTracks =
+      recentlyPlayed.items!.map((item) => item.track!).toSet().toList();
 
-  if (token == null) {
-    throw Exception('Token not found');
-  }
-
-  yield await _fetchRecentlyPlayed(token.accessToken!);
-
-  yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
-    (_) async => _fetchRecentlyPlayed(token.accessToken!),
-  );
+  return uniqueTracks;
 }
 
 @riverpod
-Future<List<Artist>> fetchArtists(FetchArtistsRef ref, List artistIDs) async {
+Stream<List<Track>> recentlyPlayedTracksStream(
+    RecentlyPlayedTracksStreamRef ref) async* {
   final token = await ref.read(fetchSavedTokenProvider.future);
 
   if (token == null) {
     throw Exception('Token not found');
   }
 
+  yield await _fetchRecentlyPlayedTracks(token.accessToken!);
+
+  yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
+    (_) async => _fetchRecentlyPlayedTracks(token.accessToken!),
+  );
+}
+
+Future<List<Artist>> fetchArtists(String acessToken, List artistIDs) async {
   final response = await http.get(
     Uri.parse('$_multipleArtistsEndpoint?ids=${artistIDs.join(',')}'),
     headers: {
-      'Authorization': 'Bearer ${token.accessToken}',
+      'Authorization': 'Bearer $acessToken',
     },
   );
 
@@ -109,19 +113,11 @@ Future<List<Artist>> fetchArtists(FetchArtistsRef ref, List artistIDs) async {
   return artists.map((artist) => Artist.fromJson(artist)).toList();
 }
 
-Future<List<Artist>> _fetchArtistsFromRecentlyPlayed(
-    FetchArtistsFromRecentlyPlayedRef ref) async {
-  final token = await ref.read(fetchSavedTokenProvider.future);
-
-  if (token == null) {
-    throw Exception('Token not found');
-  }
-
-  final recentlyPlayed = await _fetchRecentlyPlayed(token.accessToken!);
-
-  final artistIDs = recentlyPlayed.items!
-      .map((item) => item.track!.artists!.map((artist) => artist.id))
-      .expand((ids) => ids)
+Future<List<Artist>> _fetchRecentlyPlayedArtists(
+    String accessToken, List<Track> recentlyPlayedTracks) async {
+  final artistIDs = recentlyPlayedTracks
+      .map((track) => track.artists!.map((artist) => artist.id!))
+      .expand((element) => element)
       .toSet()
       .toList();
 
@@ -129,15 +125,25 @@ Future<List<Artist>> _fetchArtistsFromRecentlyPlayed(
     return [];
   }
 
-  return await ref.read(fetchArtistsProvider(artistIDs).future);
+  return fetchArtists(accessToken, artistIDs);
 }
 
 @riverpod
-Stream<List<Artist>> fetchArtistsFromRecentlyPlayed(
-    FetchArtistsFromRecentlyPlayedRef ref) async* {
-  yield await _fetchArtistsFromRecentlyPlayed(ref);
+Stream<List<Artist>> fetchRecentlyPlayedArtistStream(
+    FetchRecentlyPlayedArtistStreamRef ref) async* {
+  final token = await ref.read(fetchSavedTokenProvider.future);
+
+  if (token == null) {
+    throw Exception('Token not found');
+  }
+
+  final recentlyPlayedTracks =
+      await ref.read(recentlyPlayedTracksStreamProvider.future);
+  yield await _fetchRecentlyPlayedArtists(
+      token.accessToken!, recentlyPlayedTracks);
 
   yield* Stream.periodic(const Duration(minutes: 2, seconds: 30)).asyncMap(
-    (_) async => _fetchArtistsFromRecentlyPlayed(ref),
+    (_) async =>
+        _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks),
   );
 }

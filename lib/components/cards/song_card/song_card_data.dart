@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:harmony/models/recently_played_state/item.dart';
+import 'package:harmony/models/recently_played_state/track.dart';
 
 class SongCardData extends StatelessWidget {
-  final Item item;
+  final Track track;
 
   const SongCardData({
     super.key,
-    required this.item,
+    required this.track,
   });
 
   @override
@@ -41,7 +41,7 @@ class SongCardData extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                      item.track?.album?.images?.first.url ?? '',
+                      track.album?.images?.first.url ?? '',
                     ),
                     colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.6),
@@ -59,7 +59,7 @@ class SongCardData extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              item.track?.name ?? '',
+                              track.name ?? '',
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.poppins(
@@ -68,7 +68,7 @@ class SongCardData extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              item.track?.artists
+                              track.artists
                                       ?.map((artist) => artist.name)
                                       .join(', ') ??
                                   '',
