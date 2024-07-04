@@ -14,19 +14,25 @@ class RecentSongsSection extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Recent Songs",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+    return const Padding(
+      padding: EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Recent Songs",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        SizedBox(height: 10),
-        SizedBox(height: 150, child: SongCard()),
-      ],
+          SizedBox(height: 10),
+          SizedBox(
+            height: 150,
+            child: SongCard(),
+          ),
+        ],
+      ),
     );
   }
 }
