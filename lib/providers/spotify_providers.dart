@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:harmony/models/artists/artist.dart';
 import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
 import 'package:harmony/models/recently_played_state/recently_played_state.dart';
@@ -46,6 +47,10 @@ Future<CurrentlyPlayingState> _fetchCurrentlyPlayingState(
     },
   );
 
+  if (kDebugMode) {
+    print('_fetchCurrentlyPlayingState Status Code: ${response.statusCode}');
+  }
+
   if (response.statusCode == 204) {
     throw NoContentException('No content');
   }
@@ -73,6 +78,10 @@ Future<RecentlyPlayedState> _fetchRecentlyPlayedState(
       'Authorization': 'Bearer $accessToken',
     },
   );
+
+  if (kDebugMode) {
+    print('_fetchRecentlyPlayedState Status Code: ${response.statusCode}');
+  }
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load recently played');
@@ -113,6 +122,10 @@ Future<List<Artist>> fetchArtists(String acessToken, List artistIDs) async {
       'Authorization': 'Bearer $acessToken',
     },
   );
+
+  if (kDebugMode) {
+    print('fetchArtists Status Code: ${response.statusCode}');
+  }
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load artists');
@@ -164,6 +177,10 @@ Future<List<Track>> _fetchRecommendations(
       'seed_tracks': seedTrackIds.join(','),
     },
   );
+
+  if (kDebugMode) {
+    print('_fetchRecommendations Status Code: ${response.statusCode}');
+  }
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load recommendations');
