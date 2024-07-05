@@ -2,10 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:harmony/models/artists/artist.dart';
-import 'package:harmony/models/currently_playing_state/currently_playing_state.dart';
-import 'package:harmony/models/recently_played_state/recently_played_state.dart';
-import 'package:harmony/models/recently_played_state/track.dart';
+import 'package:harmony/models/artists/artist.dart' as artists;
+import 'package:harmony/models/currently_playing_state/currently_playing_state.dart'
+    as currently_playing_state;
+import 'package:harmony/models/recently_played_state/recently_played_state.dart'
+    as recently_played_state;
+import 'package:harmony/models/recently_played_state/track.dart'
+    as recently_played_state;
+import 'package:harmony/models/recommendations/track.dart' as recommendations;
 import 'package:harmony/providers/exceptions/no_content_exception.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:http/http.dart' as http;
@@ -23,8 +27,8 @@ const _currentlyPlayingUpdateInterval = Duration(seconds: 15);
 const _recentlyPlayedUpdateInterval = Duration(minutes: 2, seconds: 15);
 
 @riverpod
-Stream<CurrentlyPlayingState> currentlyPlayingStateStream(
-    CurrentlyPlayingStateStreamRef ref) async* {
+Stream<currently_playing_state.CurrentlyPlayingState>
+    currentlyPlayingStateStream(CurrentlyPlayingStateStreamRef ref) async* {
   final token = await ref.watch(fetchSavedTokenProvider.future);
 
   if (token == null) {
@@ -38,8 +42,8 @@ Stream<CurrentlyPlayingState> currentlyPlayingStateStream(
   );
 }
 
-Future<CurrentlyPlayingState> _fetchCurrentlyPlayingState(
-    String accessToken) async {
+Future<currently_playing_state.CurrentlyPlayingState>
+    _fetchCurrentlyPlayingState(String accessToken) async {
   final response = await http.get(
     Uri.parse(_playerCurrentlyPlayingEndpoint),
     headers: {
@@ -60,7 +64,8 @@ Future<CurrentlyPlayingState> _fetchCurrentlyPlayingState(
   }
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
-  final currentPlayingState = CurrentlyPlayingState.fromJson(json);
+  final currentPlayingState =
+      currently_playing_state.CurrentlyPlayingState.fromJson(json);
 
   if (currentPlayingState.item!.type != 'track' ||
       currentPlayingState.isPlaying == false) {
@@ -70,7 +75,7 @@ Future<CurrentlyPlayingState> _fetchCurrentlyPlayingState(
   return currentPlayingState;
 }
 
-Future<RecentlyPlayedState> _fetchRecentlyPlayedState(
+Future<recently_played_state.RecentlyPlayedState> _fetchRecentlyPlayedState(
     String accessToken) async {
   final response = await http.get(
     Uri.parse(_recentlyPlayedEndpoint),
@@ -88,10 +93,11 @@ Future<RecentlyPlayedState> _fetchRecentlyPlayedState(
   }
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
-  return RecentlyPlayedState.fromJson(json);
+  return recently_played_state.RecentlyPlayedState.fromJson(json);
 }
 
-Future<List<Track>> _fetchRecentlyPlayedTracks(String accessToken) async {
+Future<List<recently_played_state.Track>> _fetchRecentlyPlayedTracks(
+    String accessToken) async {
   final recentlyPlayed = await _fetchRecentlyPlayedState(accessToken);
   final uniqueTracks =
       recentlyPlayed.items!.map((item) => item.track!).toSet().toList();
@@ -100,7 +106,7 @@ Future<List<Track>> _fetchRecentlyPlayedTracks(String accessToken) async {
 }
 
 @riverpod
-Stream<List<Track>> recentlyPlayedTracksStream(
+Stream<List<recently_played_state.Track>> recentlyPlayedTracksStream(
     RecentlyPlayedTracksStreamRef ref) async* {
   final token = await ref.watch(fetchSavedTokenProvider.future);
 
@@ -115,7 +121,8 @@ Stream<List<Track>> recentlyPlayedTracksStream(
   );
 }
 
-Future<List<Artist>> fetchArtists(String acessToken, List artistIDs) async {
+Future<List<artists.Artist>> fetchArtists(
+    String acessToken, List artistIDs) async {
   final response = await http.get(
     Uri.parse('$_multipleArtistsEndpoint?ids=${artistIDs.join(',')}'),
     headers: {
@@ -132,13 +139,13 @@ Future<List<Artist>> fetchArtists(String acessToken, List artistIDs) async {
   }
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
-  final artists = json['artists'] as List;
+  final artistList = json['artists'] as List;
 
-  return artists.map((artist) => Artist.fromJson(artist)).toList();
+  return artistList.map((artist) => artists.Artist.fromJson(artist)).toList();
 }
 
-Future<List<Artist>> _fetchRecentlyPlayedArtists(
-    String accessToken, List<Track> recentlyPlayedTracks) async {
+Future<List<artists.Artist>> _fetchRecentlyPlayedArtists(String accessToken,
+    List<recently_played_state.Track> recentlyPlayedTracks) async {
   final artistIDs = recentlyPlayedTracks
       .map((track) => track.artists!.map((artist) => artist.id!))
       .expand((element) => element)
@@ -153,7 +160,7 @@ Future<List<Artist>> _fetchRecentlyPlayedArtists(
 }
 
 @riverpod
-Future<List<Artist>> fetchRecentlyPlayedArtists(
+Future<List<artists.Artist>> fetchRecentlyPlayedArtists(
     FetchRecentlyPlayedArtistsRef ref) async {
   final token = await ref.watch(fetchSavedTokenProvider.future);
 
@@ -167,7 +174,7 @@ Future<List<Artist>> fetchRecentlyPlayedArtists(
   return _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks);
 }
 
-Future<List<Track>> _fetchRecommendations(
+Future<List<recommendations.Track>> _fetchRecommendations(
     String accessToken, List<String> seedTrackIds) async {
   final response = await http.get(
     Uri.parse(
@@ -189,21 +196,22 @@ Future<List<Track>> _fetchRecommendations(
   final json = jsonDecode(response.body) as Map<String, dynamic>;
   final tracks = json['tracks'] as List;
 
-  return tracks.map((track) => Track.fromJson(track)).toList();
+  return tracks.map((track) => recommendations.Track.fromJson(track)).toList();
 }
 
 @riverpod
-Future<List<Track>> fetchRecommendations(FetchRecommendationsRef ref) async {
+Future<List<recommendations.Track>> fetchRecommendations(
+    FetchRecommendationsRef ref) async {
   final token = await ref.watch(fetchSavedTokenProvider.future);
 
   if (token == null) {
     throw Exception('Token not found');
   }
 
-  final recentlyPlayedTracks =
+  final List<recently_played_state.Track> recentlyPlayedTracks =
       await ref.watch(recentlyPlayedTracksStreamProvider.future);
 
-  final seedTrackIds = recentlyPlayedTracks.reversed
+  final List<String> seedTrackIds = recentlyPlayedTracks.reversed
       .map((track) => track.id!)
       .toSet()
       .take(5)
