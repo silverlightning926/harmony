@@ -9,7 +9,6 @@ import 'package:harmony/models/recently_played_state/recently_played_state.dart'
     as recently_played_state;
 import 'package:harmony/models/recently_played_state/track.dart'
     as recently_played_state;
-import 'package:harmony/models/recommendations/track.dart' as recommendations;
 import 'package:harmony/providers/exceptions/no_content_exception.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:http/http.dart' as http;
@@ -174,7 +173,7 @@ Future<List<artists.Artist>> fetchRecentlyPlayedArtists(
   return _fetchRecentlyPlayedArtists(token.accessToken!, recentlyPlayedTracks);
 }
 
-Future<List<recommendations.Track>> _fetchRecommendations(
+Future<List<recently_played_state.Track>> _fetchRecommendations(
     String accessToken, List<String> seedTrackIds) async {
   final response = await http.get(
     Uri.parse(
@@ -196,11 +195,13 @@ Future<List<recommendations.Track>> _fetchRecommendations(
   final json = jsonDecode(response.body) as Map<String, dynamic>;
   final tracks = json['tracks'] as List;
 
-  return tracks.map((track) => recommendations.Track.fromJson(track)).toList();
+  return tracks
+      .map((track) => recently_played_state.Track.fromJson(track))
+      .toList();
 }
 
 @riverpod
-Future<List<recommendations.Track>> fetchRecommendations(
+Future<List<recently_played_state.Track>> fetchRecommendations(
     FetchRecommendationsRef ref) async {
   final token = await ref.watch(fetchSavedTokenProvider.future);
 
