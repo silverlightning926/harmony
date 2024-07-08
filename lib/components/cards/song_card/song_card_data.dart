@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:harmony/models/recently_played_state/track.dart';
 
@@ -34,7 +35,9 @@ class SongCardData extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           child: Material(
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                context.push('/song/${track.id}');
+              },
               child: Ink(
                 padding: const EdgeInsets.all(10),
                 width: 250,

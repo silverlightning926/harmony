@@ -15,6 +15,7 @@ class SubtitleAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return AppBar(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 45),
           Animate(

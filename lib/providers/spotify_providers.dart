@@ -9,6 +9,7 @@ import 'package:harmony/models/recently_played_state/recently_played_state.dart'
     as recently_played_state;
 import 'package:harmony/models/recently_played_state/track.dart'
     as recently_played_state;
+import 'package:harmony/models/track/track.dart' as track;
 import 'package:harmony/providers/exceptions/no_content_exception.dart';
 import 'package:harmony/providers/secure_storage_provider.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +22,7 @@ const _playerCurrentlyPlayingEndpoint = '$_baseUrl/me/player/currently-playing';
 const _recentlyPlayedEndpoint = '$_baseUrl/me/player/recently-played';
 const _multipleArtistsEndpoint = '$_baseUrl/artists';
 const _recommendationsEndpoint = '$_baseUrl/recommendations';
+const _trackEndpoint = '$_baseUrl/tracks';
 
 const _currentlyPlayingUpdateInterval = Duration(seconds: 15);
 const _recentlyPlayedUpdateInterval = Duration(minutes: 2, seconds: 15);
@@ -219,4 +221,33 @@ Future<List<recently_played_state.Track>> fetchRecommendations(
       .toList();
 
   return _fetchRecommendations(token.accessToken!, seedTrackIds);
+}
+
+Future<track.Track> _fetchTrack(String accessToken, String trackId) async {
+  final response = await http.get(
+    Uri.parse('$_trackEndpoint/$trackId'),
+    headers: {'Authorization': 'Bearer $accessToken'},
+  );
+
+  if (kDebugMode) {
+    print('fetchTrack Status Code: ${response.statusCode}');
+  }
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load track');
+  }
+
+  final json = jsonDecode(response.body) as Map<String, dynamic>;
+  return track.Track.fromJson(json);
+}
+
+@riverpod
+Future<track.Track> fetchTrack(FetchTrackRef ref, String trackId) async {
+  final token = await ref.watch(fetchSavedTokenProvider.future);
+
+  if (token == null) {
+    throw Exception('Token not found');
+  }
+
+  return _fetchTrack(token.accessToken!, trackId);
 }

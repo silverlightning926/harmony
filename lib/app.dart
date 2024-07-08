@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:harmony/screens/connect_screen.dart';
 import 'package:harmony/screens/home_screen.dart';
 import 'package:harmony/screens/loading_screen.dart';
+import 'package:harmony/screens/song_screen.dart';
 
 class Harmony extends StatelessWidget {
   const Harmony({super.key});
@@ -26,6 +27,13 @@ class Harmony extends StatelessWidget {
           GoRoute(
             path: '/connect',
             builder: (context, state) => const ConnectScreen(),
+          ),
+          GoRoute(
+            path: "/song/:songId",
+            builder: (context, state) {
+              final songId = state.pathParameters['songId'];
+              return SongScreen(trackId: songId!);
+            },
           ),
         ],
       ),
