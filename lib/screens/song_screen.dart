@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harmony/components/navigation/song_appbar.dart';
 import 'package:harmony/providers/spotify_providers.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 class SongScreen extends ConsumerWidget {
   final String trackId;
@@ -20,47 +19,55 @@ class SongScreen extends ConsumerWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SongAppBar(trackId: trackId),
             SliverPersistentHeader(
-              floating: false,
               pinned: true,
               delegate: _SliverAppBarDelegate(
                 const TabBar(
-                  padding: EdgeInsets.zero,
                   tabs: [
-                    Tab(text: 'Info'),
-                    Tab(text: 'Lyrics'),
-                  ],
-                ),
-              ),
-            ),
-            SliverClip(
-              child: SliverFillViewport(
-                delegate: SliverChildListDelegate(
-                  [
-                    const TabBarView(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Center(
-                            child: Text('Info'),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Center(
-                            child: Text('Lyrics'),
-                          ),
-                        ),
-                      ],
+                    Tab(
+                      text: 'Info',
+                    ),
+                    Tab(
+                      text: 'Lyrics',
                     ),
                   ],
                 ),
               ),
             ),
           ],
+          body: TabBarView(
+            children: [
+              ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(20),
+                physics: const NeverScrollableScrollPhysics(),
+                children: List.generate(
+                  20,
+                  (index) => Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    height: 100,
+                    color: Colors.primaries[index % Colors.primaries.length],
+                  ),
+                ),
+              ),
+              ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(20),
+                physics: const NeverScrollableScrollPhysics(),
+                children: List.generate(
+                  20,
+                  (index) => Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    height: 100,
+                    color: Colors.primaries[index % Colors.primaries.length],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -75,7 +82,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return tabBar;
+    return Material(child: tabBar);
   }
 
   @override
