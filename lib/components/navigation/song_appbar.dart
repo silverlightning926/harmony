@@ -29,7 +29,6 @@ class _SongAppBarState extends ConsumerState<SongAppBar> {
       data: (track) {
         return SliverAppBar(
           expandedHeight: 200,
-          floating: true,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
             titlePadding: const EdgeInsets.fromLTRB(72, 10, 20, 10),
@@ -39,7 +38,7 @@ class _SongAppBarState extends ConsumerState<SongAppBar> {
               children: [
                 Text(
                   track.name!,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
                   style: GoogleFonts.poppins(

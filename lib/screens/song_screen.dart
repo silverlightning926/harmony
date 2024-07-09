@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harmony/components/navigation/song_appbar.dart';
+import 'package:harmony/providers/spotify_providers.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class SongScreen extends ConsumerWidget {
   final String trackId;
@@ -12,32 +14,53 @@ class SongScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: Implement UI based on track data
+    final track = ref.watch(fetchTrackProvider(trackId));
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              SongAppBar(trackId: trackId),
-              SliverPersistentHeader(
-                delegate: _SliverAppBarDelegate(
-                  const TabBar(
-                    tabs: [
-                      Tab(text: 'Info'),
-                      Tab(text: 'Lyrics'),
-                    ],
-                  ),
+        body: CustomScrollView(
+          slivers: [
+            SongAppBar(trackId: trackId),
+            SliverPersistentHeader(
+              floating: false,
+              pinned: true,
+              delegate: _SliverAppBarDelegate(
+                const TabBar(
+                  padding: EdgeInsets.zero,
+                  tabs: [
+                    Tab(text: 'Info'),
+                    Tab(text: 'Lyrics'),
+                  ],
                 ),
-                pinned: true,
               ),
-            ];
-          },
-          body: const TabBarView(
-            children: [
-              Center(child: Text('Info Content')),
-              Center(child: Text('Lyrics Content')),
-            ],
-          ),
+            ),
+            SliverClip(
+              child: SliverFillViewport(
+                delegate: SliverChildListDelegate(
+                  [
+                    const TabBarView(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Center(
+                            child: Text('Info'),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Center(
+                            child: Text('Lyrics'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
