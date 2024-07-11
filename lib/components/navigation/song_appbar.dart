@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:harmony/providers/spotify_providers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SongAppBar extends ConsumerStatefulWidget {
   final String trackId;
@@ -28,6 +30,19 @@ class _SongAppBarState extends ConsumerState<SongAppBar> {
     return track.when(
       data: (track) {
         return SliverAppBar(
+          actions: [
+            IconButton(
+              icon: const Icon(
+                FontAwesomeIcons.spotify,
+                color: Color(0xFF1DB954),
+              ),
+              onPressed: () async {
+                if (!await launchUrl(Uri.parse(track.externalUrls!.spotify!))) {
+                  throw Exception('Could not launch Spotify URL');
+                }
+              },
+            ),
+          ],
           pinned: true,
           expandedHeight: 200,
           flexibleSpace: Material(

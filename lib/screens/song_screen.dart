@@ -6,7 +6,6 @@ import 'package:harmony/components/cards/song_screen/track_artists_card.dart';
 import 'package:harmony/components/cards/song_screen/track_description_card.dart';
 import 'package:harmony/components/cards/song_screen/track_length_card.dart';
 import 'package:harmony/components/cards/song_screen/track_name_card.dart';
-import 'package:harmony/components/cards/song_screen/track_open_externally_card.dart';
 import 'package:harmony/components/cards/song_screen/track_popularity_card.dart';
 import 'package:harmony/components/cards/song_screen/track_preview_card.dart';
 import 'package:harmony/components/cards/song_screen/track_release_date_card.dart';
@@ -52,7 +51,7 @@ class _SongScreenState extends ConsumerState<SongScreen> {
           body: TabBarView(
             children: [
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(20.0),
                 child: SingleChildScrollView(
                   child: StaggeredGrid.count(
                     crossAxisSpacing: 10,
@@ -91,10 +90,6 @@ class _SongScreenState extends ConsumerState<SongScreen> {
                       StaggeredGridTile.fit(
                         crossAxisCellCount: 1,
                         child: TrackPreviewCard(trackId: widget.trackId),
-                      ),
-                      StaggeredGridTile.fit(
-                        crossAxisCellCount: 1,
-                        child: TrackOpenExternallyCard(trackId: widget.trackId),
                       ),
                       // TODO: Implement More Cards
                     ],
