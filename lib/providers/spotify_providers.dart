@@ -122,12 +122,12 @@ Stream<List<recently_played_state.Track>> recentlyPlayedTracksStream(
   );
 }
 
-Future<List<artists.Artist>> fetchArtists(
-    String acessToken, List artistIDs) async {
+Future<List<artists.Artist>> _fetchArtists(
+    String accessToken, List artistIDs) async {
   final response = await http.get(
     Uri.parse('$_multipleArtistsEndpoint?ids=${artistIDs.join(',')}'),
     headers: {
-      'Authorization': 'Bearer $acessToken',
+      'Authorization': 'Bearer $accessToken',
     },
   );
 
@@ -157,7 +157,7 @@ Future<List<artists.Artist>> _fetchRecentlyPlayedArtists(String accessToken,
     return [];
   }
 
-  return fetchArtists(accessToken, artistIDs);
+  return _fetchArtists(accessToken, artistIDs);
 }
 
 @riverpod
@@ -238,6 +238,7 @@ Future<track.Track> _fetchTrack(String accessToken, String trackId) async {
   }
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
+
   return track.Track.fromJson(json);
 }
 
