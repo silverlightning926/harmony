@@ -34,7 +34,7 @@ class TrackArtistsCard extends ConsumerWidget {
             ),
           ],
           child: Wrap(
-            spacing: 10,
+            spacing: 8,
             runSpacing: 10,
             children: track.artists!.map((artist) {
               return ClipRRect(
