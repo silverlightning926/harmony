@@ -75,6 +75,8 @@ class SongCardData extends StatelessWidget {
                                       ?.map((artist) => artist.name)
                                       .join(', ') ??
                                   '',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w300,

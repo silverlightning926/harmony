@@ -230,7 +230,7 @@ Future<track.Track> _fetchTrack(String accessToken, String trackId) async {
   );
 
   if (kDebugMode) {
-    print('fetchTrack Status Code: ${response.statusCode}');
+    print('_fetchTrack Status Code: ${response.statusCode}');
   }
 
   if (response.statusCode != 200) {
