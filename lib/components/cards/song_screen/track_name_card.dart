@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:harmony/components/cards/song_screen/track_info_card.dart';
 import 'package:harmony/providers/spotify_providers.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -33,15 +32,12 @@ class TrackNameCard extends ConsumerWidget {
               duration: Duration(milliseconds: 300),
             ),
           ],
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: TrackInfoCard(
-              title: 'Name',
-              content: track.name!,
+          child: Text(
+            track.name!,
+            maxLines: null,
+            style: GoogleFonts.poppins(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
             ),
           ),
         );
