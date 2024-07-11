@@ -30,11 +30,12 @@ class TrackAlbumCard extends ConsumerWidget {
                 child: track.album!.images!.first.url == null
                     ? Image.asset(
                         'assets/images/artist_placeholder.jpg',
-                        fit: BoxFit.cover,
-                        colorBlendMode: BlendMode.darken,
-                        color: Colors.black.withOpacity(0.5),
+                        height: 150,
                       )
-                    : Image.network(track.album!.images!.first.url!),
+                    : Image.network(
+                        track.album!.images!.first.url!,
+                        height: 150,
+                      ),
               ),
               const SizedBox(height: 10),
               Text(
@@ -69,7 +70,7 @@ class TrackAlbumCard extends ConsumerWidget {
           );
         },
         loading: () {
-          return const LinearProgressIndicator();
+          return const SizedBox.shrink();
         },
         error: (error, stackTrace) {
           return Text(

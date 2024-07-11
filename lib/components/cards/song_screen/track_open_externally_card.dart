@@ -55,7 +55,7 @@ class TrackOpenExternallyCard extends ConsumerWidget {
           );
         },
         loading: () {
-          return const LinearProgressIndicator();
+          return const SizedBox.shrink();
         },
         error: (error, stackTrace) {
           return Text(

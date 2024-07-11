@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:harmony/components/cards/song_screen/track_info_card.dart';
 import 'package:harmony/providers/spotify_providers.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class TrackNameCard extends ConsumerWidget {
   final String trackId;
@@ -26,13 +25,7 @@ class TrackNameCard extends ConsumerWidget {
           return TrackInfoCard(title: 'Name', content: track.name!);
         },
         loading: () {
-          return Shimmer(
-            child: Container(
-              width: 20,
-              height: 20,
-              color: Colors.white.withOpacity(0.2),
-            ),
-          );
+          return const SizedBox.shrink();
         },
         error: (error, stackTrace) {
           return Text(

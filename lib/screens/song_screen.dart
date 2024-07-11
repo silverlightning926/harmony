@@ -51,28 +51,54 @@ class _SongScreenState extends ConsumerState<SongScreen> {
           },
           body: TabBarView(
             children: [
-              // TODO: Redo The Layout And Aspect Ratios Of The Cards
-              MasonryGridView.custom(
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
-                padding: const EdgeInsets.all(20),
-                gridDelegate:
-                    const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
-                childrenDelegate: SliverChildListDelegate(
-                  [
-                    TrackNameCard(trackId: widget.trackId),
-                    TrackArtistsCard(trackId: widget.trackId),
-                    TrackDescriptionCard(trackId: widget.trackId),
-                    TrackAlbumCard(trackId: widget.trackId),
-                    TrackReleaseDateCard(trackId: widget.trackId),
-                    TrackLengthCard(trackId: widget.trackId),
-                    TrackPopularityCard(trackId: widget.trackId),
-                    TrackPreviewCard(trackId: widget.trackId),
-                    TrackOpenExternallyCard(trackId: widget.trackId),
-                    // TODO: Implement More Cards
-                  ],
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SingleChildScrollView(
+                  child: StaggeredGrid.count(
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 2,
+                    axisDirection: AxisDirection.down,
+                    children: [
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 2,
+                        child: TrackNameCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 2,
+                        child: TrackArtistsCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 2,
+                        child: TrackDescriptionCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 1,
+                        child: TrackAlbumCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 1,
+                        child: TrackReleaseDateCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 1,
+                        child: TrackLengthCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 1,
+                        child: TrackPopularityCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 1,
+                        child: TrackPreviewCard(trackId: widget.trackId),
+                      ),
+                      StaggeredGridTile.fit(
+                        crossAxisCellCount: 1,
+                        child: TrackOpenExternallyCard(trackId: widget.trackId),
+                      ),
+                      // TODO: Implement More Cards
+                    ],
+                  ),
                 ),
               ),
 

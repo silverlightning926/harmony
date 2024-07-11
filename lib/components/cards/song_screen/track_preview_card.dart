@@ -23,6 +23,7 @@ class _TrackPreviewCardState extends ConsumerState<TrackPreviewCard> {
 
   Duration currentPosition = Duration.zero;
   Duration totalDuration = Duration.zero;
+  double progress = 0;
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _TrackPreviewCardState extends ConsumerState<TrackPreviewCard> {
       if (mounted) {
         setState(() {
           isPlaying = false;
+          progress = 0;
         });
       }
     });
@@ -93,6 +95,11 @@ class _TrackPreviewCardState extends ConsumerState<TrackPreviewCard> {
                       onPressed: () {
                         if (isPlaying) {
                           player.pause();
+
+                          setState(() {
+                            progress = currentPosition.inMilliseconds /
+                                totalDuration.inMilliseconds;
+                          });
                         } else {
                           audio.UrlSource urlSource = audio.UrlSource(
                             track.previewUrl!,
@@ -113,7 +120,11 @@ class _TrackPreviewCardState extends ConsumerState<TrackPreviewCard> {
                   Expanded(
                     child: isPlaying
                         ? totalDuration.inMilliseconds == 0
-                            ? const LinearProgressIndicator()
+                            ? LinearProgressIndicator(
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                    Colors.green),
+                                backgroundColor: Colors.white.withOpacity(0.2),
+                              )
                             : LinearProgressIndicator(
                                 value: currentPosition.inMilliseconds /
                                     totalDuration.inMilliseconds,
@@ -121,8 +132,11 @@ class _TrackPreviewCardState extends ConsumerState<TrackPreviewCard> {
                                     Colors.green),
                                 backgroundColor: Colors.white.withOpacity(0.2),
                               )
-                        : const LinearProgressIndicator(
-                            value: 0,
+                        : LinearProgressIndicator(
+                            value: progress,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                Colors.green),
+                            backgroundColor: Colors.white.withOpacity(0.2),
                           ),
                   ),
                   const SizedBox(width: 10),
@@ -132,21 +146,7 @@ class _TrackPreviewCardState extends ConsumerState<TrackPreviewCard> {
           );
         },
         loading: () {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Preview',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const LinearProgressIndicator(),
-            ],
-          );
+          return const SizedBox.shrink();
         },
         error: (error, stackTrace) {
           return Text(
